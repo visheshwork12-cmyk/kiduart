@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Security Framework Configuration - School ERP</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 20px; }
+      label { display: block; margin: 10px 0 5px; }
+      input, select, textarea { width: 100%; padding: 8px; margin-bottom: 10px; }
+      button { padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer; }
+      button:hover { background-color: #0056b3; }
+      .conditional { display: none; }
+      .conditional.active { display: block; }
+    </style>
+    <script>
+      function toggleConditionalFields(toggled, containerId) {
+        const toggle = document.getElementById(toggled);
+        const container = document.getElementById(containerId);
+        if (toggle.checked) {
+          container.classList.add('active');
+        } else {
+          container.classList.remove('active');
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <h2>Security Framework Configuration</h2>
+    <form action="/v1/superadmin/security-framework" method="POST">
+      <label for="authenticationStack.methods">Authentication Methods</label>
+      <select name="authenticationStack[methods][]" multiple required>
+        <% ['Email OTP', 'SMS OTP', 'App-based'].forEach(method => { %>
+          <option value="<%= method %>" <%= settings.authenticationStack?.methods?.includes(method) ? 'selected' : '' %>><%= method %></option>
+        <% }) %>
+      </select>
+      <label for="authenticationStack.email.enabled">Email OTP Enabled</label>
+      <input type="checkbox" id="authenticationStack.email.enabled" name="authenticationStack[email][enabled]" value="yes" <%= settings.authenticationStack?.email?.enabled ? 'checked' : '' %> onchange="toggleConditionalFields('authenticationStack.email.enabled', 'emailFields')">
+      <div id="emailFields" class="conditional <%= settings.authenticationStack?.email?.enabled ? 'active' : '' %>">
+        <label for="authenticationStack.email.smtpServer">SMTP Server</label>
+        <input type="text" name="authenticationStack[email][smtpServer]" value="<%= settings.authenticationStack?.email?.smtpServer || '' %>">
+        <label for="authenticationStack.email.smtpPort">SMTP Port</label>
+        <input type="number" name="authenticationStack[email][smtpPort]" value="<%= settings.authenticationStack?.email?.smtpPort || 587 %>">
+      </div>
+      <label for="authenticationStack.sms.enabled">SMS OTP Enabled</label>
+      <input type="checkbox" id="authenticationStack.sms.enabled" name="authenticationStack[sms][enabled]" value="yes" <%= settings.authenticationStack?.sms?.enabled ? 'checked' : '' %> onchange="toggleConditionalFields('authenticationStack.sms.enabled', 'smsFields')">
+      <div id="smsFields" class="conditional <%= settings.authenticationStack?.sms?.enabled ? 'active' : '' %>">
+        <label for="authenticationStack.sms.provider">SMS Provider</label>
+        <select name="authenticationStack[sms][provider]">
+          <% ['Twilio', 'Nexmo', 'AWS SNS'].forEach(provider => { %>
+            <option value="<%= provider %>" <%= settings.authenticationStack?.sms?.provider === provider ? 'selected' : '' %>><%= provider %></option>
+          <% }) %>
+        </select>
+      </div>
+      <label for="authenticationStack.appBased.enabled">App-based OTP Enabled</label>
+      <input type="checkbox" id="authenticationStack.appBased.enabled" name="authenticationStack[appBased][enabled]" value="yes" <%= settings.authenticationStack?.appBased?.enabled ? 'checked' : '' %> onchange="toggleConditionalFields('authenticationStack.appBased.enabled', 'appBasedFields')">
+      <div id="appBasedFields" class="conditional <%= settings.authenticationStack?.appBased?.enabled ? 'active' : '' %>">
+        <label for="authenticationStack.appBased.secretLength">Secret Length</label>
+        <input type="number" name="authenticationStack[appBased][secretLength]" value="<%= settings.authenticationStack?.appBased?.secretLength || 32 %>">
+      </div>
+      <label for="encryption.standard">Encryption Standard</label>
+      <select name="encryption[standard]" required>
+        <% ['AES-256', 'RSA-2048'].forEach(standard => { %>
+          <option value="<%= standard %>" <%= settings.encryption?.standard === standard ? 'selected' : '' %>><%= standard %></option>
+        <% }) %>
+      </select>
+      <label for="encryption.keyRotationFrequency">Key Rotation Frequency (days)</label>
+      <input type="number" name="encryption[keyRotationFrequency]" value="<%= settings.encryption?.keyRotationFrequency || 90 %>" required>
+      <label for="ipGeofencing.enabled">IP Geofencing Enabled</label>
+      <input type="checkbox" id="ipGeofencing.enabled" name="ipGeofencing[enabled]" value="yes" <%= settings.ipGeofencing?.enabled ? 'checked' : '' %> onchange="toggleConditionalFields('ipGeofencing.enabled', 'geofencingFields')">
+      <div id="geofencingFields" class="conditional <%= settings.ipGeofencing?.enabled ? 'active' : '' %>">
+        <label for="ipGeofencing.whitelist">IP Whitelist (comma-separated)</label>
+        <input type="text" name="ipGeofencing[whitelist]" value="<%= settings.ipGeofencing?.whitelist?.join(',') || '' %>">
+        <label for="ipGeofencing.blacklist">IP Blacklist (comma-separated)</label>
+        <input type="text" name="ipGeofencing[blacklist]" value="<%= settings.ipGeofencing?.blacklist?.join(',') || '' %>">
+        <label for="ipGeofencing.geoIpDatabase">Geo-IP Database</label>
+        <select name="ipGeofencing[geoIpDatabase]" required>
+          <% ['GeoLite2', 'MaxMind'].forEach(db => { %>
+            <option value="<%= db %>" <%= settings.ipGeofencing?.geoIpDatabase === db ? 'selected' : '' %>><%= db %></option>
+          <% }) %>
+        </select>
+      </div>
+      <label for="sessionGovernance.idleTimeout">Idle Session Timeout (minutes)</label>
+      <input type="number" name="sessionGovernance[idleTimeout]" value="<%= settings.sessionGovernance?.idleTimeout || 15 %>" required>
+      <label for="sessionGovernance.concurrentLimit">Concurrent Session Limit</label>
+      <input type="number" name="sessionGovernance[concurrentLimit]" value="<%= settings.sessionGovernance?.concurrentLimit || 5 %>" required>
+      <label for="complianceSuite.standards">Compliance Standards</label>
+      <select name="complianceSuite[standards][]" multiple required>
+        <% ['ISO 27001', 'CBSE', 'GDPR', 'HIPAA'].forEach(standard => { %>
+          <option value="<%= standard %>" <%= settings.complianceSuite?.standards?.includes(standard) ? 'selected' : '' %>><%= standard %></option>
+        <% }) %>
+      </select>
+      <label for="complianceSuite.auditLogs.enabled">Audit Logs Enabled</label>
+      <input type="checkbox" id="complianceSuite.auditLogs.enabled" name="complianceSuite[auditLogs][enabled]" value="yes" <%= settings.complianceSuite?.auditLogs?.enabled ? 'checked' : '' %> onchange="toggleConditionalFields('complianceSuite.auditLogs.enabled', 'auditLogFields')">
+      <div id="auditLogFields" class="conditional <%= settings.complianceSuite?.auditLogs?.enabled ? 'active' : '' %>">
+        <label for="complianceSuite.auditLogs.retentionPeriod">Audit Log Retention Period (days)</label>
+        <input type="number" name="complianceSuite[auditLogs][retentionPeriod]" value="<%= settings.complianceSuite?.auditLogs?.retentionPeriod || 365 %>">
+      </div>
+      <label for="complianceSuite.reportGeneration.enabled">Report Generation Enabled</label>
+      <input type="checkbox" id="complianceSuite.reportGeneration.enabled" name="complianceSuite[reportGeneration][enabled]" value="yes" <%= settings.complianceSuite?.reportGeneration?.enabled ? 'checked' : '' %> onchange="toggleConditionalFields('complianceSuite.reportGeneration.enabled', 'reportFields')">
+      <div id="reportFields" class="conditional <%= settings.complianceSuite?.reportGeneration?.enabled ? 'active' : '' %>">
+        <label for="complianceSuite.reportGeneration.format">Report Format</label>
+        <select name="complianceSuite[reportGeneration][format]">
+          <% ['PDF', 'CSV'].forEach(format => { %>
+            <option value="<%= format %>" <%= settings.complianceSuite?.reportGeneration?.format === format ? 'selected' : '' %>><%= format %></option>
+          <% }) %>
+        </select>
+      </div>
+      <label for="dataMasking.enabled">Data Masking Enabled</label>
+      <input type="checkbox" id="dataMasking.enabled" name="dataMasking[enabled]" value="yes" <%= settings.dataMasking?.enabled ? 'checked' : '' %> onchange="toggleConditionalFields('dataMasking.enabled', 'maskingFields')">
+      <div id="maskingFields" class="conditional <%= settings.dataMasking?.enabled ? 'active' : '' %>">
+        <label for="dataMasking.fields">Maskable Fields</label>
+        <select name="dataMasking[fields][]" multiple>
+          <% ['Aadhaar', 'Phone', 'Email', 'Name'].forEach(field => { %>
+            <option value="<%= field %>" <%= settings.dataMasking?.fields?.includes(field) ? 'selected' : '' %>><%= field %></option>
+          <% }) %>
+        </select>
+        <label for="dataMasking.policy">Masking Policy</label>
+        <select name="dataMasking[policy]">
+          <% ['Partial', 'Full'].forEach(policy => { %>
+            <option value="<%= policy %>" <%= settings.dataMasking?.policy === policy ? 'selected' : '' %>><%= policy %></option>
+          <% }) %>
+        </select>
+      </div>
+      <button type="submit">Save Security Framework</button>
+    </form>
+  </body>
+</html>

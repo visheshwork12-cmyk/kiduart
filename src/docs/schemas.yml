@@ -1,0 +1,511 @@
+components:
+  schemas:
+    School:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        address:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+          format: email
+    Token:
+      type: object
+      properties:
+        access:
+          type: object
+          properties:
+            token:
+              type: string
+            expires:
+              type: string
+              format: date-time
+        refresh:
+          type: object
+          properties:
+            token:
+              type: string
+            expires:
+              type: string
+              format: date-time
+    SystemSettings:
+      type: object
+      properties:
+        id:
+          type: string
+        systemIdentifier:
+          type: string
+          description: Globally unique identifier for the system (e.g., xAI EduCore v3.0)
+        version:
+          type: string
+          description: System version in semantic format (e.g., 3.0.1-beta)
+        releaseNotes:
+          type: string
+          description: Notes describing the current system release
+          
+
+components:
+  schemas:
+    CoreSystemConfig:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the core system settings
+        systemIdentifier:
+          type: string
+          description: Globally unique identifier for the system (e.g., xAI EduCore v3.0)
+        version:
+          type: string
+          description: System version in semantic format (e.g., 3.0.1-beta)
+        releaseNotes:
+          type: string
+          description: Notes describing the current system release
+        operationalMode:
+          type: string
+          enum: [production, staging, development]
+          description: Current operational environment of the system
+        sandboxMode:
+          type: boolean
+          description: Toggle for isolated testing environment
+        ntpServer:
+          type: string
+          description: NTP server for time synchronization (e.g., pool.ntp.org)
+        syncInterval:
+          type: number
+          description: Interval for NTP sync in minutes
+        timeZone:
+          type: string
+          description: Time zone for the system (e.g., UTC, America/New_York)
+        dateTimeFormat:
+          type: string
+          description: Date-time format (e.g., YYYY-MM-DD HH:mm:ss)
+        locale:
+          type: string
+          description: Locale for date-time formatting (e.g., en-US)
+        language:
+          type: string
+          description: System language (e.g., en, hi, zh)
+        numberFormat:
+          type: object
+          description: Number formatting (e.g., { decimalSeparator: '.', thousandsSeparator: ',' })
+          properties:
+            decimalSeparator:
+              type: string
+              description: Decimal separator (e.g., .)
+            thousandsSeparator:
+              type: string
+              description: Thousands separator (e.g., ,)
+        addressFormat:
+          type: string
+          description: Address format (e.g., {street}, {city}, {state} {postalCode}, {country})
+
+    EnterpriseInfra:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the enterprise infrastructure settings
+        cloudProviders:
+          type: array
+          items:
+            type: string
+            enum: ['AWS', 'Azure', 'Google Cloud', 'Hybrid']
+          description: Selected cloud providers for deployment
+        dataCenterRegions:
+          type: array
+          items:
+            type: string
+            enum: ['Mumbai', 'Singapore', 'Frankfurt', 'US-East-1', 'Sydney', 'Tokyo', 'London', 'Sao Paulo']
+          description: Selected data center regions for deployment
+        highAvailabilityCluster:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+              description: Enable high-availability cluster
+            nodeCount:
+              type: number
+              description: Number of nodes in the cluster (required if enabled)
+            failoverStrategy:
+              type: string
+              enum: ['Manual', 'Automatic', 'Custom']
+              description: Failover strategy for the cluster (required if enabled)
+          description: High-availability cluster configuration
+        inMemoryComputing:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+              description: Enable in-memory computing
+            engine:
+              type: string
+              enum: ['SAP HANA', 'Redis Enterprise']
+              description: In-memory computing engine (required if enabled)
+          description: In-memory computing configuration
+        distributedDatabase:
+          type: object
+          properties:
+            configuration:
+              type: string
+              enum: ['Sharded', 'Replicated']
+              description: Distributed database configuration type
+            databaseEngine:
+              type: string
+              enum: ['Cassandra', 'PostgreSQL', 'MongoDB']
+              description: Database engine for distributed configuration
+          description: Distributed database configuration
+        automatedBackup:
+          type: object
+          properties:
+            mode:
+              type: string
+              enum: ['Real-time', 'Incremental']
+              description: Backup mode
+            storageTypes:
+              type: array
+              items:
+                type: string
+                enum: ['Local', 'Cloud', 'Tape']
+              description: Storage types for backups
+            offsite:
+              type: boolean
+              description: Enable offsite backups
+          description: Automated backup configuration
+        disasterRecovery:
+          type: object
+          properties:
+            rpo:
+              type: number
+              description: Recovery Point Objective in minutes
+            rto:
+              type: number
+              description: Recovery Time Objective in minutes
+            drSite:
+              type: string
+              enum: ['AWS US-East-1', 'AWS Mumbai', 'Azure Singapore', 'Google Cloud Tokyo']
+              description: Disaster recovery site
+          description: Disaster recovery configuration
+        aiDrivenLoadBalancing:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+              description: Enable AI-driven load balancing
+            predictiveScaling:
+              type: object
+              properties:
+                threshold:
+                  type: number
+                  description: Scaling threshold (0-100)
+                scaleFactor:
+                  type: number
+                  description: Scaling factor percentage
+              description: Predictive scaling configuration
+          description: AI-driven load balancing configuration
+
+
+  schemas:
+    CoreSystemConfig:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the core system settings
+        systemIdentifier:
+          type: string
+          description: Globally unique identifier for the system (e.g., xAI EduCore v3.0)
+        version:
+          type: string
+          description: System version in semantic format (e.g., 3.0.1-beta)
+        releaseNotes:
+          type: string
+          description: Notes describing the current system release
+        operationalMode:
+          type: string
+          enum: ['production', 'staging', 'development']
+          description: Current operational environment of the system
+        sandboxMode:
+          type: boolean
+          description: Toggle for isolated testing environment
+        ntpServer:
+          type: string
+          description: NTP server for time synchronization (e.g., pool.ntp.org)
+        syncInterval:
+          type: number
+          description: Interval for NTP sync in minutes
+        timeZone:
+          type: string
+          description: Time zone for the system (e.g., UTC, America/New_York)
+        dateTimeFormat:
+          type: string
+          description: Date-time format (e.g., YYYY-MM-DD HH:mm:ss)
+        locale:
+          type: string
+          description: Locale for date-time formatting (e.g., en-US)
+        language:
+          type: string
+          description: System language (e.g., en, hi, zh)
+        numberFormat:
+          type: object
+          description: Number formatting (e.g., { decimalSeparator: '.', thousandsSeparator: ',' })
+          properties:
+            decimalSeparator:
+              type: string
+              description: Decimal separator (e.g., .)
+            thousandsSeparator:
+              type: string
+              description: Thousands separator (e.g., ,)
+        addressFormat:
+          type: string
+          description: Address format (e.g., {street}, {city}, {state} {postalCode}, {country})
+
+    EnterpriseInfra:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the enterprise infrastructure settings
+        cloudProviders:
+          type: array
+          items:
+            type: string
+            enum: ['AWS', 'Azure', 'Google Cloud', 'Hybrid']
+          description: Selected cloud providers for deployment
+        dataCenterRegions:
+          type: array
+          items:
+            type: string
+            enum: ['Mumbai', 'Singapore', 'Frankfurt', 'US-East-1', 'Sydney', 'Tokyo', 'London', 'Sao Paulo']
+          description: Selected data center regions for deployment
+        highAvailabilityCluster:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+              description: Enable high-availability cluster
+            nodeCount:
+              type: number
+              description: Number of nodes in the cluster (required if enabled)
+            failoverStrategy:
+              type: string
+              enum: ['Manual', 'Automatic', 'Custom']
+              description: Failover strategy for the cluster (required if enabled)
+          description: High-availability cluster configuration
+        inMemoryComputing:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+              description: Enable in-memory computing
+            engine:
+              type: string
+              enum: ['SAP HANA', 'Redis Enterprise']
+              description: In-memory computing engine (required if enabled)
+          description: In-memory computing configuration
+        distributedDatabase:
+          type: object
+          properties:
+            configuration:
+              type: string
+              enum: ['Sharded', 'Replicated']
+              description: Distributed database configuration type
+            databaseEngine:
+              type: string
+              enum: ['Cassandra', 'PostgreSQL', 'MongoDB']
+              description: Database engine for distributed configuration
+          description: Distributed database configuration
+        automatedBackup:
+          type: object
+          properties:
+            mode:
+              type: string
+              enum: ['Real-time', 'Incremental']
+              description: Backup mode
+            storageTypes:
+              type: array
+              items:
+                type: string
+                enum: ['Local', 'Cloud', 'Tape']
+              description: Storage types for backups
+            offsite:
+              type: boolean
+              description: Enable offsite backups
+          description: Automated backup configuration
+        disasterRecovery:
+          type: object
+          properties:
+            rpo:
+              type: number
+              description: Recovery Point Objective in minutes
+            rto:
+              type: number
+              description: Recovery Time Objective in minutes
+            drSite:
+              type: string
+              enum: ['AWS US-East-1', 'AWS Mumbai', 'Azure Singapore', 'Google Cloud Tokyo']
+              description: Disaster recovery site
+          description: Disaster recovery configuration
+        aiDrivenLoadBalancing:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+              description: Enable AI-driven load balancing
+            predictiveScaling:
+              type: object
+              properties:
+                threshold:
+                  type: number
+                  description: Scaling threshold (0-100)
+                scaleFactor:
+                  type: number
+                  description: Scaling factor percentage
+              description: Predictive scaling configuration
+          description: AI-driven load balancing configuration
+
+    SecurityFramework:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the security framework settings
+        authenticationStack:
+          type: object
+          properties:
+            methods:
+              type: array
+              items:
+                type: string
+                enum: ['Email OTP', 'SMS OTP', 'App-based']
+              description: Selected authentication methods
+            email:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                  description: Enable email OTP
+                smtpServer:
+                  type: string
+                  description: SMTP server for email OTP (required if enabled)
+                smtpPort:
+                  type: number
+                  description: SMTP port for email OTP (required if enabled)
+              description: Email OTP configuration
+            sms:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                  description: Enable SMS OTP
+                provider:
+                  type: string
+                  enum: ['Twilio', 'Nexmo', 'AWS SNS']
+                  description: SMS provider (required if enabled)
+              description: SMS OTP configuration
+            appBased:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                  description: Enable app-based OTP
+                secretLength:
+                  type: number
+                  description: Length of TOTP secret (required if enabled)
+              description: App-based OTP configuration
+          description: Multi-factor authentication configuration
+        encryption:
+          type: object
+          properties:
+            standard:
+              type: string
+              enum: ['AES-256', 'RSA-2048']
+              description: Encryption standard
+            keyRotationFrequency:
+              type: number
+              description: Key rotation frequency in days
+          description: End-to-end encryption configuration
+        ipGeofencing:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+              description: Enable IP geofencing
+            whitelist:
+              type: array
+              items:
+                type: string
+              description: Whitelisted IP addresses
+            blacklist:
+              type: array
+              items:
+                type: string
+              description: Blacklisted IP addresses
+            geoIpDatabase:
+              type: string
+              enum: ['GeoLite2', 'MaxMind']
+              description: Geo-IP database for location-based access control
+          description: IP geofencing configuration
+        sessionGovernance:
+          type: object
+          properties:
+            idleTimeout:
+              type: number
+              description: Idle session timeout in minutes
+            concurrentLimit:
+              type: number
+              description: Maximum concurrent sessions per user
+          description: Session governance configuration
+        complianceSuite:
+          type: object
+          properties:
+            standards:
+              type: array
+              items:
+                type: string
+                enum: ['ISO 27001', 'CBSE', 'GDPR', 'HIPAA']
+              description: Compliance standards
+            auditLogs:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                  description: Enable audit logging
+                retentionPeriod:
+                  type: number
+                  description: Audit log retention period in days
+              description: Audit logging configuration
+            reportGeneration:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                  description: Enable compliance report generation
+                format:
+                  type: string
+                  enum: ['PDF', 'CSV']
+                  description: Report format
+              description: Compliance report generation configuration
+          description: Compliance suite configuration
+        dataMasking:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+              description: Enable data masking
+            fields:
+              type: array
+              items:
+                type: string
+                enum: ['Aadhaar', 'Phone', 'Email', 'Name']
+              description: Fields to mask
+            policy:
+              type: string
+              enum: ['Partial', 'Full']
+              description: Data masking policy
+          description: Data masking configuration

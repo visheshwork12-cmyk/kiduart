@@ -1,0 +1,56 @@
+<!-- src/templates/coreSystemConfig.ejs -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Core System Configuration - School ERP</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 20px; }
+      label { display: block; margin: 10px 0 5px; }
+      input, select, textarea { width: 100%; padding: 8px; margin-bottom: 10px; }
+      button { padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer; }
+      button:hover { background-color: #0056b3; }
+    </style>
+  </head>
+  <body>
+    <h2>Core System Configuration</h2>
+    <form action="/v1/superadmin/core-config" method="POST">
+      <label for="systemIdentifier">System Identifier</label>
+      <input type="text" name="systemIdentifier" value="<%= settings.systemIdentifier || 'xAI EduCore v3.0' %>" required>
+      <label for="version">Version</label>
+      <input type="text" name="version" value="<%= settings.version || '3.0.1-beta' %>" required>
+      <label for="releaseNotes">Release Notes</label>
+      <textarea name="releaseNotes"><%= settings.releaseNotes || '' %></textarea>
+      <label for="operationalMode">Operational Mode</label>
+      <select name="operationalMode" required>
+        <option value="production" <%= settings.operationalMode === 'production' ? 'selected' : '' %>>Production</option>
+        <option value="staging" <%= settings.operationalMode === 'staging' ? 'selected' : '' %>>Staging</option>
+        <option value="development" <%= settings.operationalMode === 'development' ? 'selected' : '' %>>Development</option>
+      </select>
+      <label for="sandboxMode">Sandbox Mode</label>
+      <input type="checkbox" name="sandboxMode" <%= settings.sandboxMode ? 'checked' : '' %>>
+      <label for="ntpServer">NTP Server</label>
+      <input type="text" name="ntpServer" value="<%= settings.ntpServer || 'pool.ntp.org' %>">
+      <label for="syncInterval">Sync Interval (minutes)</label>
+      <input type="number" name="syncInterval" value="<%= settings.syncInterval || 60 %>">
+      <label for="timeZone">Time Zone</label>
+      <input type="text" name="timeZone" value="<%= settings.timeZone || 'UTC' %>">
+      <label for="dateTimeFormat">Date-Time Format</label>
+      <input type="text" name="dateTimeFormat" value="<%= settings.dateTimeFormat || 'YYYY-MM-DD HH:mm:ss' %>">
+      <label for="locale">Locale</label>
+      <input type="text" name="locale" value="<%= settings.locale || 'en-US' %>">
+      <label for="language">Language</label>
+      <select name="language">
+        <option value="en" <%= settings.language === 'en' ? 'selected' : '' %>>English</option>
+        <option value="hi" <%= settings.language === 'hi' ? 'selected' : '' %>>Hindi</option>
+        <option value="zh" <%= settings.language === 'zh' ? 'selected' : '' %>>Chinese</option>
+      </select>
+      <label for="numberFormat.decimalSeparator">Decimal Separator</label>
+      <input type="text" name="numberFormat[decimalSeparator]" value="<%= settings.numberFormat?.decimalSeparator || '.' %>">
+      <label for="numberFormat.thousandsSeparator">Thousands Separator</label>
+      <input type="text" name="numberFormat[thousandsSeparator]" value="<%= settings.numberFormat?.thousandsSeparator || ',' %>">
+      <label for="addressFormat">Address Format</label>
+      <input type="text" name="addressFormat" value="<%= settings.addressFormat || '{street}, {city}, {state} {postalCode}, {country}' %>">
+      <button type="submit">Save Core Configuration</button>
+    </form>
+  </body>
+</html>

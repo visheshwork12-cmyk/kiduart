@@ -1,0 +1,40 @@
+{
+    "compilerOptions": {
+      "module": "ESNext",
+      "moduleResolution": "node",
+      "target": "ES2020",
+      "allowSyntheticDefaultImports": true,
+      "baseUrl": "./",
+      "paths": {
+        "@config/*": ["src/config/*"],
+        "@models/*": ["src/models/*"],
+        "@services/*": ["src/services/*"],
+        "@middleware/*": ["src/middleware/*"],
+        "@utils/*": ["src/shared/utils/*"],
+        "@constants/*": ["src/shared/constants/*"],
+        "@i18n/*": ["src/shared/i18n/*"],
+        "@api/*": ["src/api/*"],
+        "@lib/*": ["src/lib/*"],
+        "@repositories/*": ["src/repositories/*"],
+        "@jobs/*": ["src/jobs/*"],
+        "@templates/*": ["src/templates/*"],
+        "@validations/*": ["src/validations/*"],
+        "@integrations/*": ["src/integrations/*"],
+        "@docs/*": ["src/docs/*"],
+        "@types/*": ["src/types/*"],
+        "@plugins/*": ["src/models/plugins/*"],
+        "@interfaces/*": ["src/shared/interfaces/*"],
+        "@root/*": ["./"]
+      }
+    },
+    "include": [
+      "src/**/*",
+      "tests/**/*",
+      "*.js"
+    ],
+    "exclude": [
+      "node_modules",
+      "dist",
+      "build"
+    ]
+  }  

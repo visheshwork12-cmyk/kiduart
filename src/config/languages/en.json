@@ -1,0 +1,6 @@
+{
+    "welcome_message": "Welcome to the School ERP System",
+    "settings_updated": "System settings updated successfully",
+    "ntp_sync_success": "NTP synchronization successful",
+    "invalid_format": "Invalid date-time format"
+  }

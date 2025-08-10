@@ -1,0 +1,109 @@
+<!-- src/templates/enterpriseInfra.ejs -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Enterprise Infrastructure Configuration - School ERP</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 20px; }
+      label { display: block; margin: 10px 0 5px; }
+      input, select, textarea { width: 100%; padding: 8px; margin-bottom: 10px; }
+      button { padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer; }
+      button:hover { background-color: #0056b3; }
+      .conditional { display: none; }
+      .conditional.active { display: block; }
+    </style>
+    <script>
+      function toggleConditionalFields(toggled, containerId) {
+        const toggle = document.getElementById(toggled);
+        const container = document.getElementById(containerId);
+        if (toggle.checked) {
+          container.classList.add('active');
+        } else {
+          container.classList.remove('active');
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <h2>Enterprise Infrastructure Configuration</h2>
+    <form action="/v1/superadmin/enterprise-infra" method="POST">
+      <label for="cloudProviders">Cloud Providers</label>
+      <select name="cloudProviders[]" multiple required>
+        <% ['AWS', 'Azure', 'Google Cloud', 'Hybrid'].forEach(provider => { %>
+          <option value="<%= provider %>" <%= settings.cloudProviders?.includes(provider) ? 'selected' : '' %>><%= provider %></option>
+        <% }) %>
+      </select>
+      <label for="dataCenterRegions">Data Center Regions</label>
+      <select name="dataCenterRegions[]" multiple required>
+        <% ['Mumbai', 'Singapore', 'Frankfurt', 'US-East-1', 'Sydney', 'Tokyo', 'London', 'Sao Paulo'].forEach(region => { %>
+          <option value="<%= region %>" <%= settings.dataCenterRegions?.includes(region) ? 'selected' : '' %>><%= region %></option>
+        <% }) %>
+      </select>
+      <label for="highAvailabilityCluster.enabled">High-Availability Cluster</label>
+      <input type="checkbox" id="highAvailabilityCluster.enabled" name="highAvailabilityCluster[enabled]" value="yes" <%= settings.highAvailabilityCluster?.enabled ? 'checked' : '' %> onchange="toggleConditionalFields('highAvailabilityCluster.enabled', 'haClusterFields')">
+      <div id="haClusterFields" class="conditional <%= settings.highAvailabilityCluster?.enabled ? 'active' : '' %>">
+        <label for="highAvailabilityCluster.nodeCount">Node Count</label>
+        <input type="number" name="highAvailabilityCluster[nodeCount]" value="<%= settings.highAvailabilityCluster?.nodeCount || 1 %>">
+        <label for="highAvailabilityCluster.failoverStrategy">Failover Strategy</label>
+        <select name="highAvailabilityCluster[failoverStrategy]">
+          <% ['Manual', 'Automatic', 'Custom'].forEach(strategy => { %>
+            <option value="<%= strategy %>" <%= settings.highAvailabilityCluster?.failoverStrategy === strategy ? 'selected' : '' %>><%= strategy %></option>
+          <% }) %>
+        </select>
+      </div>
+      <label for="inMemoryComputing.enabled">In-Memory Computing</label>
+      <input type="checkbox" id="inMemoryComputing.enabled" name="inMemoryComputing[enabled]" value="yes" <%= settings.inMemoryComputing?.enabled ? 'checked' : '' %> onchange="toggleConditionalFields('inMemoryComputing.enabled', 'inMemoryFields')">
+      <div id="inMemoryFields" class="conditional <%= settings.inMemoryComputing?.enabled ? 'active' : '' %>">
+        <label for="inMemoryComputing.engine">Engine</label>
+        <select name="inMemoryComputing[engine]">
+          <% ['SAP HANA', 'Redis Enterprise'].forEach(engine => { %>
+            <option value="<%= engine %>" <%= settings.inMemoryComputing?.engine === engine ? 'selected' : '' %>><%= engine %></option>
+          <% }) %>
+        </select>
+      </div>
+      <label for="distributedDatabase.configuration">Distributed Database Configuration</label>
+      <select name="distributedDatabase[configuration]" required>
+        <option value="Sharded" <%= settings.distributedDatabase?.configuration === 'Sharded' ? 'selected' : '' %>>Sharded</option>
+        <option value="Replicated" <%= settings.distributedDatabase?.configuration === 'Replicated' ? 'selected' : '' %>>Replicated</option>
+      </select>
+      <label for="distributedDatabase.databaseEngine">Database Engine</label>
+      <select name="distributedDatabase[databaseEngine]" required>
+        <% ['Cassandra', 'PostgreSQL', 'MongoDB'].forEach(engine => { %>
+          <option value="<%= engine %>" <%= settings.distributedDatabase?.databaseEngine === engine ? 'selected' : '' %>><%= engine %></option>
+        <% }) %>
+      </select>
+      <label for="automatedBackup.mode">Backup Mode</label>
+      <select name="automatedBackup[mode]" required>
+        <option value="Real-time" <%= settings.automatedBackup?.mode === 'Real-time' ? 'selected' : '' %>>Real-time</option>
+        <option value="Incremental" <%= settings.automatedBackup?.mode === 'Incremental' ? 'selected' : '' %>>Incremental</option>
+      </select>
+      <label for="automatedBackup.storageTypes">Storage Types</label>
+      <select name="automatedBackup[storageTypes][]" multiple required>
+        <% ['Local', 'Cloud', 'Tape'].forEach(type => { %>
+          <option value="<%= type %>" <%= settings.automatedBackup?.storageTypes?.includes(type) ? 'selected' : '' %>><%= type %></option>
+        <% }) %>
+      </select>
+      <label for="automatedBackup.offsite">Offsite Backup</label>
+      <input type="checkbox" name="automatedBackup[offsite]" <%= settings.automatedBackup?.offsite ? 'checked' : '' %>>
+      <label for="disasterRecovery.rpo">RPO (minutes)</label>
+      <input type="number" name="disasterRecovery[rpo]" value="<%= settings.disasterRecovery?.rpo || 5 %>">
+      <label for="disasterRecovery.rto">RTO (minutes)</label>
+      <input type="number" name="disasterRecovery[rto]" value="<%= settings.disasterRecovery?.rto || 15 %>">
+      <label for="disasterRecovery.drSite">DR Site</label>
+      <select name="disasterRecovery[drSite]" required>
+        <% ['AWS US-East-1', 'AWS Mumbai', 'Azure Singapore', 'Google Cloud Tokyo'].forEach(site => { %>
+          <option value="<%= site %>" <%= settings.disasterRecovery?.drSite === site ? 'selected' : '' %>><%= site %></option>
+        <% }) %>
+      </select>
+      <label for="aiDrivenLoadBalancing.enabled">AI-Driven Load Balancing</label>
+      <input type="checkbox" id="aiDrivenLoadBalancing.enabled" name="aiDrivenLoadBalancing[enabled]" value="yes" <%= settings.aiDrivenLoadBalancing?.enabled ? 'checked' : '' %> onchange="toggleConditionalFields('aiDrivenLoadBalancing.enabled', 'loadBalancingFields')">
+      <div id="loadBalancingFields" class="conditional <%= settings.aiDrivenLoadBalancing?.enabled ? 'active' : '' %>">
+        <label for="aiDrivenLoadBalancing.predictiveScaling.threshold">Scaling Threshold</label>
+        <input type="number" name="aiDrivenLoadBalancing[predictiveScaling][threshold]" value="<%= settings.aiDrivenLoadBalancing?.predictiveScaling?.threshold || 75 %>">
+        <label for="aiDrivenLoadBalancing.predictiveScaling.scaleFactor">Scale Factor (%)</label>
+        <input type="number" name="aiDrivenLoadBalancing[predictiveScaling][scaleFactor]" value="<%= settings.aiDrivenLoadBalancing?.predictiveScaling?.scaleFactor || 20 %>">
+      </div>
+      <button type="submit">Save Enterprise Infrastructure</button>
+    </form>
+  </body>
+</html>

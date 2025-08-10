@@ -1,0 +1,8 @@
+
+{
+  "settings_created": "Settings created successfully",
+  "settings_updated": "Settings updated successfully",
+  "settings_not_found": "Settings not found",
+  "invalid_otp": "Invalid OTP provided",
+  "compliance_report_generated": "Compliance report generated successfully"
+}

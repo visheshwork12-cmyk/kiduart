@@ -1,0 +1,129 @@
+{
+  "name": "school-erp-backend",
+ "version": "0.0.0-development",
+  "description": "School ERP Backend API",
+  "main": "src/server.js",
+  "type": "module",
+ "imports": {
+    "#config/*": "./src/config/*.js",
+    "#models/*": "./src/models/*.js",
+    "#services/*": "./src/services/*.js",
+    "#middleware/*": "./src/middleware/*.js",
+    "#utils/*": "./src/shared/utils/*.js",
+    "#constants/*": "./src/shared/constants/*.js",
+    "#api/*": "./src/api/*.js",
+    "#lib/*": "./src/lib/*.js",
+    "#repositories/*": "./src/repositories/*.js",
+    "#jobs/*": "./src/jobs/*.js",
+    "#templates/*": "./src/templates/*.js",
+    "#validations/*": "./src/validations/*.js",
+    "#integrations/*": "./src/integrations/*.js"
+  },
+  "_moduleAliases": {
+    "@root": ".",
+    "@src": "src",
+    "@config": "src/config",
+    "@models": "src/models",
+    "@middleware": "src/middleware",
+    "@shared": "src/shared",
+    "@services": "src/services",
+    "@api": "src/api",
+    "@integrations": "src/integrations",
+    "@lib": "src/lib",
+    "@validations": "src/validations",
+    "@jobs": "src/jobs",
+    "@templates": "src/templates"
+  },
+  "scripts": {
+    "start": "node --import ./alias-loader.js src/server.js",
+    "dev": "nodemon --import 'data:text/javascript,import { register } from \"node:module\"; import { pathToFileURL } from \"node:url\"; register(\"./alias-loader.js\", pathToFileURL(\"./\"));' src/server.js",
+    "start:local": "NODE_ENV=development node --import ./alias-loader.js src/server.js",
+    "build": "echo 'No build step required'",
+    "vercel-build": "echo 'Serverless build complete'",
+    "test": "NODE_ENV=test node --import ./alias-loader.js --experimental-vm-modules node_modules/.bin/jest --detectOpenHandles",
+    "test:watch": "NODE_ENV=test node --import ./alias-loader.js --experimental-vm-modules node_modules/.bin/jest --watch",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "format": "prettier --write src/**/*.{js,yml}",
+    "release": "semantic-release",
+    "commit": "git-cz"
+  },
+  "dependencies": {
+    "@sentry/node": "^7.0.0",  
+    "datadog-metrics": "^0.9.3",
+    "cors": "^2.8.5",  
+    "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.5.1",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.7",
+    "csrf-csrf": "^3.1.1",
+    "date-fns": "^4.1.0",
+    "date-fns-tz": "^3.2.0",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.21.0",
+    "express-rate-limit": "^7.5.1",
+    "geoip-lite": "^1.4.10",
+    "helmet": "^8.0.0",
+    "http-status": "^1.7.0",
+    "i18next": "^25.3.2",
+    "i18next-fs-backend": "^2.6.0",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
+    "module-alias": "^2.2.3",
+    "mongoose": "^8.16.5",
+    "morgan": "^1.10.0",
+    "node-cron": "^3.0.3",
+    "nodemailer": "^6.10.1",
+    "ntp-client": "^0.5.3",
+    "otplib": "^12.0.1",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "pino": "^9.4.0",
+    "pino-pretty": "^11.2.2",
+    "prom-client": "^15.1.3",
+    "rate-limit-redis": "^4.2.1",
+    "redis": "^4.7.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "twilio": "^5.8.0",
+    "zxcvbn": "^4.4.2"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.0.0",
+    "@commitlint/config-conventional": "^19.0.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^11.0.3",
+    "@semantic-release/npm": "^12.0.2",
+    "@semantic-release/release-notes-generator": "^14.0.3",
+    "commitizen": "^4.3.0",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^9.11.1",
+    "husky": "^9.0.0",
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.7",
+    "prettier": "^3.3.3",
+    "semantic-release": "^24.2.7",
+    "supertest": "^7.0.0"
+  },
+  "engines": {
+    "node": ">=20.12.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_USERNAME/school-erp-backend.git"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "nodemon": {
+    "signal": "SIGUSR2",
+    "env": {
+      "NODE_ENV": "development"
+    }
+  }
+}

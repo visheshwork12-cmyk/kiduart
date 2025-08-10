@@ -1,0 +1,7 @@
+{
+  "settings_created": "تم إنشاء الإعدادات بنجاح",
+  "settings_updated": "تم تحديث الإعدادات بنجاح",
+  "settings_not_found": "لم يتم العثور على الإعدادات",
+  "invalid_otp": "تم تقديم OTP غير صالح",
+  "compliance_report_generated": "تم إنشاء تقرير الامتثال بنجاح"
+}
