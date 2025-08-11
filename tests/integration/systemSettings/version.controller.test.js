@@ -4,7 +4,7 @@ import VersionHistory from '@models/superadmin/versionHistory.model.js';
 import { getRedisClient } from '@lib/redis.js';
 import responseFormatter from '@utils/responseFormatter.js';
 import httpStatus from 'http-status';
-import packageJson from '@root/package.json' assert { type: 'json' };
+import packageJson from '@root/package.json' with { type: 'json' };
 
 jest.mock('@models/superadmin/coreSystemConfig.model.js');
 jest.mock('@models/superadmin/versionHistory.model.js');

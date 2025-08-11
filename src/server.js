@@ -18,7 +18,7 @@ if (process.env.SENTRY_DSN) {
   app.use(Sentry.Handlers.requestHandler());
 }
 
-// Security enhancements
+
 app.use(helmet());
 const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['http://localhost:3000'];
 app.use(cors({ origin: allowedOrigins }));
@@ -29,7 +29,7 @@ app.use(rateLimit({
 }));
 app.use(express.json({ limit: '10kb' }));
 
-// Swagger API documentation setup
+
 const swaggerOptions = {
   definition: {
     openapi: '3.0.0',
@@ -46,12 +46,11 @@ const swaggerSpecs = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 app.get('/api-docs/swagger.json', (req, res) => res.json(swaggerSpecs));
 
-// Version endpoint
+
 app.get('/api/version', (req, res) => {
   res.json({ version: packageJson.version });
 });
 
-// Error handling middleware
 app.use((err, req, res, next) => {
   logger.error('Error occurred', { error: err.message, stack: err.stack });
   if (process.env.NODE_ENV === 'production') {

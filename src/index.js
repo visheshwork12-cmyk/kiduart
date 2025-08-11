@@ -6,7 +6,6 @@ import redis from '@lib/redis.js';
 import scheduleNTPSync from '@jobs/ntpSync.job.js';
 import versionSync from '@config/versionSync.js';
 
-// Global connection cache for serverless
 let isInitialized = false;
 let dbConnected = false;
 let mongooseConnection = null;
@@ -89,10 +88,8 @@ export const initializeServices = async () => {
   try {
     logger.info('Initializing services...');
 
-    // 1. MongoDB
     await connectDB();
 
-    // 2. Redis
     try {
       const isRedisHealthy = await redis.isHealthy();
       if (isRedisHealthy) {
@@ -107,10 +104,10 @@ export const initializeServices = async () => {
       });
     }
 
-    // 3. Roles
+
     await initRoles();
 
-    // 4. Version sync
+
     try {
       await versionSync.syncVersion(null, 'System initialization', process.env.COMMIT_HASH || 'unknown');
       logger.info('Version sync completed');
@@ -118,7 +115,6 @@ export const initializeServices = async () => {
       logger.warn('Version sync failed', { message: error.message, stack: error.stack });
     }
 
-    // 5. NTP sync (non-serverless only)
     if (!isServerless) {
       try {
         scheduleNTPSync();
@@ -132,7 +128,6 @@ export const initializeServices = async () => {
     logger.info('All services initialized successfully');
   } catch (error) {
     logger.error('Service initialization failed', { message: error.message, stack: error.stack });
-    // Allow app to continue with degraded functionality
   }
 };
 
