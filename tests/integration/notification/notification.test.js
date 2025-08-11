@@ -2,14 +2,14 @@ import cron from 'node-cron';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import { createClient } from 'redis-mock';
-import emailService from '@services/email.service';
+import emailService from '@services/email.service.js';
 import logger from '@config/logger.js';
-import { scheduleNotification } from '@jobs/notification.job';
-import SubscriptionModel from '@models/superadmin/subscription.model';
-import { getRedisClient } from '@lib/redis';
+import { scheduleNotification } from '@jobs/notification.job.js';
+import SubscriptionModel from '@models/superadmin/subscription.model.js';
+import { getRedisClient } from '@lib/redis.js';
 
 jest.mock('node-cron');
-jest.mock('@services/email.service');
+jest.mock('@services/email.service.js');
 jest.mock('@config/logger.js');
 
 let mongod;

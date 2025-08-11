@@ -19,7 +19,7 @@ beforeAll(async () => {
   await mongoose.connect(mongod.getUri());
   const superadmin = await AdminModel.create({
     email: 'superadmin@xai.com',
-    password: 'Password123!',
+    password: 'Password123',
     role: 'superadmin',
     tenantId: new mongoose.Types.ObjectId(),
   });

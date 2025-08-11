@@ -1,8 +1,8 @@
-import subscriptionService from '@services/subscription.service';
-import subscriptionRepository from '@repositories/subscription.repository';
-import ApiError from '@shared/utils/apiError';
+import subscriptionService from '@services/systemSettings.service.js';
+import subscriptionRepository from '@repositories/subscription.repository.js';
+import ApiError from '@utils/apiError.js';
 import httpStatus from 'http-status';
-import CONSTANTS from '@shared/constants';
+import CONSTANTS from '@constants/index.js';
 
 jest.mock('@repositories/subscription.repository');
 

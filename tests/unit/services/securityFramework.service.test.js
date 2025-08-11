@@ -1,5 +1,4 @@
-// tests/unit/services/securityFramework.service.test.js
-import securityFrameworkService from '@api/v1/modules/superadmin/securityFramework/securityFramework.service.js';
+import securityFrameworkService from '@api/v1/modules/superadmin/systemSettings/securityFramework/securityFramework.service.js';
 import SecurityFramework from '@models/superadmin/securityFramework.model.js';
 import SystemSettingsHistory from '@models/superadmin/systemSettingsHistory.model.js';
 import FeatureFlags from '@models/superadmin/featureFlag.model.js';

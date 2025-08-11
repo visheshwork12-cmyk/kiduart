@@ -3,12 +3,12 @@ import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { createClient } from 'redis-mock';
 import app from '@app';
-import AdminModel from '@models/superadmin/admin.model';
-import RoleModel from '@models/superadmin/role.model';
-import SubscriptionModel from '@models/superadmin/subscription.model';
-import tokenService from '@services/token.service';
+import AdminModel from '@models/superadmin/admin.model.js';
+import RoleModel from '@models/superadmin/role.model.js';
+import SubscriptionModel from '@models/superadmin/subscription.model.js';
+import tokenService from '@services/token.service.js';
 import config from '@config';
-import { getRedisClient } from '@lib/redis';
+import { getRedisClient } from '@lib/redis.js';
 import bcrypt from 'bcryptjs';
 
 let mongod;

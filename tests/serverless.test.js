@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { createClient } from 'redis';
 import supertest from 'supertest';
-import app from '../src/server.js';  // Import app for testing
+import app from '../src/server.js'; 
 
 describe('Serverless DB/Cache Handling', () => {
   let redisClient;

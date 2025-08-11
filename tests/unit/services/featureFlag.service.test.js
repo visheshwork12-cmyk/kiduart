@@ -1,5 +1,5 @@
 // tests/unit/services/featureFlag.service.test.js
-import featureFlagService from '@api/v1/modules/superadmin/featureFlag/featureFlag.service.js';
+import featureFlagService from '@api/v1/modules/superadmin/systemSettings/featureFlags/featureFlag.service.js';
 import FeatureFlag from '@models/superadmin/featureFlag.model.js';
 import SystemSettingsHistory from '@models/superadmin/systemSettingsHistory.model.js';
 import redis from '@lib/redis.js';

@@ -1,5 +1,5 @@
 // tests/unit/services/auditLog.service.test.js
-import auditLogService from '@api/v1/modules/superadmin/auditLog/auditLog.service.js';
+import auditLogService from '@api/v1/modules/superadmin/systemSettings/auditLog/auditLog.service.js';
 import SystemSettingsHistory from '@models/superadmin/systemSettingsHistory.model.js';
 import SecurityFramework from '@models/superadmin/securityFramework.model.js';
 import redis from '@lib/redis.js';

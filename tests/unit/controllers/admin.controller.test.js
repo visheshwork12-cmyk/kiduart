@@ -1,12 +1,12 @@
-import adminController from '@api/v1/modules/superadmin/admin/controllers';
-import adminService from '@services/admin.service';
-import auditLogService from '@services/auditLog.service';
-import responseFormatter from '@shared/utils/responseFormatter';
+import adminController from '@api/v1/modules/superadmin/admin/controllers.js';
+import adminService from '@services/admin.service.js';
+import auditLogService from '@services/auditLog.service.js';
+import responseFormatter from '@utils/responseFormatter.js';
 import httpStatus from 'http-status';
 
-jest.mock('@services/admin.service');
-jest.mock('@services/auditLog.service');
-jest.mock('@shared/utils/responseFormatter');
+jest.mock('@services/admin.service.js');
+jest.mock('@services/auditLog.service.js');
+jest.mock('@shared/utils/responseFormatter.js');
 
 describe('Admin Controller Unit Tests', () => {
   let req, res, next;

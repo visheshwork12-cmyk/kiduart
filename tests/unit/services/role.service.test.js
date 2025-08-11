@@ -1,5 +1,5 @@
 // tests/unit/services/role.service.test.js
-import roleService from '@api/v1/modules/superadmin/role/role.service.js';
+import roleService from '@api/v1/modules/superadmin/systemSettings/rbac/role.service.js';
 import Role from '@models/superadmin/role.model.js';
 import SystemSettingsHistory from '@models/superadmin/systemSettingsHistory.model.js';
 import redis from '@lib/redis.js';

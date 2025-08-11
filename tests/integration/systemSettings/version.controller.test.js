@@ -1,4 +1,4 @@
-import versionController from '@api/v1/modules/system/version/version.routes.js';
+import versionController from '@api/v1/modules/superadmin/systemSettings/version/version.routes.js';
 import CoreSystemConfig from '@models/superadmin/coreSystemConfig.model.js';
 import VersionHistory from '@models/superadmin/versionHistory.model.js';
 import { getRedisClient } from '@lib/redis.js';

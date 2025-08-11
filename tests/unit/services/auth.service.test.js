@@ -1,7 +1,7 @@
-import authService from '@services/auth.service';
-import AdminModel from '@models/superadmin/admin.model';
-import tokenService from '@services/token.service';
-import ApiError from '@shared/utils/apiError';
+import authService from '@services/auth.service.js';
+import AdminModel from '@models/superadmin/admin.model.js';
+import tokenService from '@services/token.service.js';
+import ApiError from '@utils/apiError.js';
 import httpStatus from 'http-status';
 import bcrypt from 'bcryptjs';
 
