@@ -11,10 +11,8 @@ import { connectToDatabase, warmupMongo, disconnect } from './lib/mongodb.js';
 import { redisManager } from './lib/redis.js';
 import packageJson from '../package.json' with { type: 'json' };
 
-// Initialize Express app
 const app = express();
 
-// Initialize Sentry for error monitoring if DSN is provided
 if (process.env.SENTRY_DSN) {
   Sentry.init({ dsn: process.env.SENTRY_DSN });
   app.use(Sentry.Handlers.requestHandler());
