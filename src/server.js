@@ -1,37 +1,37 @@
 import express from 'express';
-import logger from '@config/logger.js';
+import logger from './config/logger.js';
 import * as Sentry from '@sentry/node';
 import helmet from 'helmet';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
-import { initializeServices, cleanup } from './index.js'; // Modified: Use @src alias to match jsconfig.json
-import { connectToDatabase, warmupMongo, disconnect } from '@lib/mongodb.js'; // Modified: Import warmupMongo correctly
-import { redisManager } from '@lib/redis.js';
-import packageJson from '../package.json' with { type: 'json' }; // Use `with` for JSON import in Node.js v22.15.0
+import { initializeServices, cleanup } from './index.js';
+import { connectToDatabase, warmupMongo, disconnect } from './lib/mongodb.js';
+import { redisManager } from './lib/redis.js';
+import packageJson from '../package.json' with { type: 'json' };
 
 // Initialize Express app
 const app = express();
 
-// New: Initialize Sentry for error monitoring if DSN is provided
+// Initialize Sentry for error monitoring if DSN is provided
 if (process.env.SENTRY_DSN) {
   Sentry.init({ dsn: process.env.SENTRY_DSN });
   app.use(Sentry.Handlers.requestHandler());
 }
 
-// New: Security enhancements
-app.use(helmet()); // Adds security headers
+// Security enhancements
+app.use(helmet());
 const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['http://localhost:3000'];
-app.use(cors({ origin: allowedOrigins })); // Restrict CORS origins for production
-app.use(rateLimit({ // Add rate limiting to prevent abuse
+app.use(cors({ origin: allowedOrigins }));
+app.use(rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: process.env.VERCEL ? 200 : 100, // Higher limit for serverless
+  max: process.env.VERCEL ? 200 : 100,
   message: 'Too many requests, please try again later.'
 }));
-app.use(express.json({ limit: '10kb' })); // Add request size limit for security
+app.use(express.json({ limit: '10kb' }));
 
-// New: Swagger API documentation setup
+// Swagger API documentation setup
 const swaggerOptions = {
   definition: {
     openapi: '3.0.0',
@@ -40,27 +40,30 @@ const swaggerOptions = {
       version: packageJson.version,
       description: 'API documentation for School ERP',
     },
+    servers: [{ url: process.env.VERCEL_URL || 'http://localhost:4000' }],
   },
-  apis: ['./src/api/**/*.js'], // Scan for JSDoc comments in API files
+  apis: ['./src/api/**/*.js'],
 };
 const swaggerSpecs = swaggerJsdoc(swaggerOptions);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs)); // Serve Swagger UI at /api-docs
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
+app.get('/api-docs/swagger.json', (req, res) => res.json(swaggerSpecs));
 
-// New: Version endpoint
+// Version endpoint
 app.get('/api/version', (req, res) => {
-  res.json({ version: packageJson.version }); // Returns version from package.json
+  res.json({ version: packageJson.version });
 });
 
-// New: Error handling middleware (production-safe)
+// Error handling middleware
 app.use((err, req, res, next) => {
+  logger.error('Error occurred', { error: err.message, stack: err.stack });
   if (process.env.NODE_ENV === 'production') {
-    // Hide sensitive info in production
     res.status(err.status || 500).json({ message: 'An error occurred', code: err.code || 'SERVER_ERROR' });
   } else {
     res.status(err.status || 500).json({ message: err.message, stack: err.stack });
   }
-  Sentry.captureException(err); // Capture errors to Sentry
-  logger.error('Error occurred', { error: err.message, stack: err.stack });
+  if (process.env.SENTRY_DSN) {
+    Sentry.captureException(err);
+  }
 });
 
 // Serverless flag
@@ -69,7 +72,6 @@ const isServerless = process.env.VERCEL || process.env.LAMBDA_TASK_ROOT;
 // Initialize services for serverless
 let servicesInitialized = false;
 
-// Modified: Ensure services are initialized for both serverless and local
 const ensureServicesInitialized = async () => {
   if (!servicesInitialized) {
     await initializeServices();
@@ -78,28 +80,28 @@ const ensureServicesInitialized = async () => {
   }
 };
 
-// Modified: Create serverless handler
+// Serverless handler
 const serverlessHandler = async (req, res) => {
   try {
     await ensureServicesInitialized();
-    return app.handle(req, res); // Use Express app.handle for serverless
+    return app.handle(req, res);
   } catch (error) {
     logger.error('Serverless handler error', { message: error.message, stack: error.stack });
     res.status(500).json({ error: 'Internal server error' });
   }
 };
 
-// Modified: Export at top level for serverless compatibility
+// Export for serverless compatibility
 export default isServerless ? serverlessHandler : app;
 
-// Local server for development/custom environments
+// Local server for development
 if (!isServerless) {
   const port = process.env.PORT || 4000;
   const startLocalServer = async () => {
     try {
       await ensureServicesInitialized();
-      await warmupMongo(); // Warmup MongoDB connection
-      await redisManager.warmup(); // Warmup Redis connection
+      await warmupMongo();
+      await redisManager.warmup();
 
       const server = app.listen(port, () => {
         logger.info(`🚀 Server running locally on http://localhost:${port}`);
@@ -112,8 +114,8 @@ if (!isServerless) {
         logger.info(`${signal} received, shutting down gracefully`);
         server.close(async () => {
           await cleanup();
-          await disconnect(); // New: Ensure MongoDB disconnects on shutdown
-          await redisManager.disconnect(); // New: Ensure Redis disconnects on shutdown
+          await disconnect();
+          await redisManager.disconnect();
           logger.info('Server shutdown complete');
           process.exit(0);
         });
@@ -124,8 +126,8 @@ if (!isServerless) {
       process.on('SIGUSR2', async () => {
         logger.info('Nodemon restart - cleaning up');
         await cleanup();
-        await disconnect(); // New: Ensure MongoDB disconnects on nodemon restart
-        await redisManager.disconnect(); // New: Ensure Redis disconnects on nodemon restart
+        await disconnect();
+        await redisManager.disconnect();
         process.kill(process.pid, 'SIGUSR2');
       });
     } catch (error) {
