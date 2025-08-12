@@ -1,4 +1,4 @@
-import authService from '@services/auth.service.js';
+import authService from '@api/v1/auth/services.js';
 import AdminModel from '@models/superadmin/admin.model.js';
 import tokenService from '@services/token.service.js';
 import ApiError from '@utils/apiError.js';
